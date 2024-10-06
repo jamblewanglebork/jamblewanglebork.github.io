@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Kepler-452b</title>
+    <style>
+        .press-start-2p-regular {
+            font-family: "Press Start 2P", system-ui;
+            font-weight: 400;
+            font-style: normal;
+        }
+        body{
+        background-image: url("imgs/background.jpg");
+        background-color: black;
+        background-position: center; 
+        background-repeat: repeat; 
+        background-size: cover;
+        margin: auto;
+        width: 640px; 
+        background-repeat: repeat-x; /* Ensure the image repeats horizontally */
+        background-position: 0 0; /* Initial background position */
+        animation: moveBackground 1000s linear infinite; /* Apply the animation */
+        }
+        @keyframes moveBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -10000px 0; /* Adjust this value depending on image width */
+    }
+  }
+
+        #desc{
+            font-family: "Press Start 2p";
+            color: white;
+            font-size: 13px;
+            position:absolute;
+            top:5cm;
+            left: 12cm;
+           
+            
+        
+       
+        }
+        #Start_Game{
+            font-family: "Press Start 2p";
+            font-size: 14px;
+            font-weight: bolder;
+            color:black;
+            background-color: rgb(166, 255, 0);
+            height:70px;
+            width:230px;
+            position:relative;
+            top:15cm;
+            left:10cm;
+
+        }
+        .points{
+            color: red;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <img src="imgs/55cancrie.jpeg" style="height:300px;width: 300px;border-radius: 210px;position: absolute;right:960px;top: 200px;">
+
+    <pre id="desc">
+        <span class="points">Name :</span> 55 Cancri e
+        
+        <span class="points">Exoplanet type :</span> Super Earth
+        
+        <span class="points">Discovery year :</span> 2004
+        
+        <span class="points">Key facts:</span>
+        
+        It has about 8.6 times the mass of Earth and roughly twice the radius.
+
+        The day-side temperatures on 55 Cancri e are extremely high, 
+        reaching 2,400°C (4,350°F). 
+        This makes it one of the hottest exoplanets discovered.
+
+        The planet is speculated to have vast lava oceans on its day side,
+        caused by the intense heat.
+
+        The planet’s surface is rumoured to be highly reflective and
+        volcanically active.
+
+        55 Cancri e could be a carbon-rich planet, leading to speculation 
+        that it might have diamond layers beneath its surface 
+        due to the abundance of carbon under high pressure. 
+
+
+
+    </pre>
+    <a href="kepler-game.html" target="_self"><button id="Start_Game">Play mini-game</button></a>
+
+    
+</body>
+</html>
