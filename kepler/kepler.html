@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <title>Kepler-452b</title>
+    <style>
+        .press-start-2p-regular {
+            font-family: "Press Start 2P", system-ui;
+            font-weight: 400;
+            font-style: normal;
+        }
+        body{
+         background-image: url("imgs/background.jpg");
+        background-color: black;
+        background-position: center; 
+        background-repeat: repeat; 
+        background-size: cover;
+        margin: auto;
+        width: 640px; 
+        background-repeat: repeat-x; /* Ensure the image repeats horizontally */
+        background-position: 0 0; /* Initial background position */
+        animation: moveBackground 1000s linear infinite; /* Apply the animation */
+        }
+        @keyframes moveBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -10000px 0; /* Adjust this value depending on image width */
+    }
+  }
+
+        #desc{
+            font-family: "Press Start 2p";
+            color: white;
+            font-size: 15px;
+            position:absolute;
+            top:5cm;
+            right:1cm;
+            
+        
+       
+        }
+        #Start_Game{
+            font-family: "Press Start 2p";
+            font-size: 14px;
+            font-weight: bolder;
+            color:black;
+            background-color: rgb(166, 255, 0);
+            height:70px;
+            width:230px;
+            position:relative;
+            top:15cm;
+            left:10cm;
+
+        }
+        .points{
+            color: red;
+        }
+
+    </style>
+     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+     <script type="importmap">
+       {
+         "imports": {
+           "three": "https://unpkg.com/three@v0.163.0/build/three.module.js",
+           "three/addons/": "https://unpkg.com/three@v0.163.0/examples/jsm/"
+         }
+       }
+     </script>
+     <script type="module" src="./main1.js"></script>
+    
+</head>
+<body>
+    <div id="scene">
+        <canvas></canvas>
+    </div>
+    
+    <!--<img src="imgs/kepler 452-b.jpeg" style="height:300px;width: 300px;border-radius: 210px;position: absolute;right:930px;top: 200px;">-->
+
+    <pre id="desc">
+        <span class="points">Name :</span> Kepler-452b
+        
+        <span class="points">Exoplanet type :</span> Super Earth
+        
+        <span class="points">Discovery year :</span> 2015 
+        
+        <span class="points">Key facts:</span>
+        
+        Possibility of liquid water to exist on the surface, 
+        making it a potential candidate for hosting life. 
+       
+        Kepler-452b has an orbital period of 385 days, 
+        very close to Earth’s 365-day orbit. 
+        
+        Kepler-452b is located about 1,800 light-years 
+        from Earth, in the constellation Cygnus.
+        
+        Kepler-452b is likely to be a rocky planet, 
+        similar to Earth,however due to higher mass - 
+        It is likely to have greater surface gravity than Earth.
+
+    </pre>
+    <a href="kepler-game.html" target="_self"><button id="Start_Game">Play mini-game</button></a>
+
+    
+</body>
+</html>
