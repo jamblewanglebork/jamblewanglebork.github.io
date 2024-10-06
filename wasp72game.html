@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mod.css">
+    <title>Catch the Falling Ball</title>
+    <style>
+        #paddle {
+            width: 100px;
+            height: 20px;
+            border-radius: 20px;
+            background-color: rgb(51, 17, 220);
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #ball {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        body {
+            background-image: url("background.jpg");
+            background-color: black;
+            background-position: center; 
+            background-repeat: repeat; 
+            background-size: cover;
+            margin: auto;
+            width: 640px; 
+            background-repeat: repeat-x; /* Ensure the image repeats horizontally */
+            background-position: 0 0; /* Initial background position */
+            animation: moveBackground 1000s linear infinite; /* Apply the animation */
+    }
+        @keyframes moveBackground {
+            0% {
+            background-position: 0 0;
+            }
+            100% {
+            background-position: -10000px 0; /* Adjust this value depending on image width */
+            }
+
+        }
+        #score, #timer {
+            font-family: "Press Start 2p";
+            position: fixed;
+            top: 10px;
+            font-size: 20px;
+          
+        }
+        #score {
+            left: 10px;
+            text-shadow: 0 0 4px rgb(104, 1, 249);
+            font-weight: bolder;
+            color: rgb(255, 255, 255);
+        }
+        #timer {
+            right: 10px;
+            font-weight: bolder;
+            text-shadow: 0 0 4px rgb(11, 185, 156);
+            color: white
+        }
+        #gameOverMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-family: "Press Start 2p";
+            color: rgba(255, 255, 255, 0.275);
+            display: none;
+        }
+        #startButton, #restartButton
+        {
+            color: black;
+        font-family: "Press Start 2p";
+        background-color: rgb(5, 55, 235);
+        border-bottom-width: 6px;
+        border-right-width: 6px;
+        border-top-width: 3px;
+        border-left-width: none;
+        border-color: rgb(117, 17, 210);
+        height: 45px;
+        width: 115px;
+        transition: color 0.5s;
+        cursor: pointer;
+        
+    }
+    #about:hover
+    {
+    color: white;
+    }
+    #info{
+        color: rgba(255, 255, 255, 0.275);
+        font-family: "Press Start 2p";
+        font-weight: bolder;
+        z-index: 2;
+        position: relative;
+        top:200px;
+        font-size: 15px;
+       text-align: center;
+    }
+        
+    </style>
+</head>
+<body>
+
+    <div id="score">Score: 0</div>
+    <div id="timer">Time Left: 30s</div>
+    <div id="ball"><img src="ironblock.png" id="ball"></div>
+    <p id="info">Press "a" and "d" to control the toggle. <br>
+        Collect as many iron blocks as you can!<br>
+        Compete with your friends to see who can collect the most!</p>
+    <div id="paddle"></div>
+    <div id="gameOverMessage">Game Over! Final Score: <span id="finalScore"></span></div>
+
+    <div id="controls">
+        <button id="startButton" style="position: absolute;left:10px;top:2cm;">Start Game</button>
+        <button id="restartButton"style="position:absolute; left:10px;top:4cm;" disabled>Reset Game</button>
+    </div>
+
+    <script>
+        const paddle = document.getElementById("paddle");
+        const ball = document.getElementById("ball");
+        const scoreDisplay = document.getElementById("score");
+        const timerDisplay = document.getElementById("timer");
+        const gameOverMessage = document.getElementById("gameOverMessage");
+        const finalScoreDisplay = document.getElementById("finalScore");
+        const startButton = document.getElementById("startButton");
+        const restartButton = document.getElementById("restartButton");
+
+        let score = 0;
+        let ballSpeed = 8;
+        let ballX = Math.random() * (window.innerWidth - 20);
+        let ballY = 0;
+        let ballDirectionX = Math.random() > 0.5 ? 1 : -1;
+        let paddleX = (window.innerWidth / 2) - 50;
+        let timeLeft = 30;  // 30-second timer
+        let gameOver = false;
+        let gameStarted = false;
+
+        let animationFrameId;
+        let timerIntervalId;
+
+        // Initialize paddle position
+        paddle.style.left = paddleX + "px";
+
+        // Move paddle with arrow keys
+        function handleKeyDown(event) {
+            if (!gameStarted || gameOver) return;
+
+            if (event.key === "a") {
+                paddleX -= 45;
+                if (paddleX < 0) paddleX = 0;
+            }
+            if (event.key === "d") {
+                paddleX += 45;
+                if (paddleX + 100 > window.innerWidth) paddleX = window.innerWidth - 100;
+            }
+            paddle.style.left = paddleX + "px";
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        // Update ball position and check for collisions
+        function update() {
+            if (gameOver || !gameStarted) return;  // Stop the game if it's over or not started
+
+            ballY += ballSpeed;
+            ballX += ballDirectionX * ballSpeed;
+
+            // Ball hits side walls
+            if (ballX <= 0 || ballX + 20 >= window.innerWidth) {
+                ballDirectionX *= -1;
+            }
+
+            // Ball falls off screen
+            if (ballY > window.innerHeight) {
+                resetBall();
+            }
+
+            // Check if the ball is caught by the paddle
+            if (ballY + 20 >= window.innerHeight - 30 && ballX + 10 >= paddleX && ballX <= paddleX + 100) {
+                score++;
+                scoreDisplay.textContent = "Score: " + score;
+                ballSpeed += 0.2; // Increase speed as game progresses
+                resetBall();
+            }
+
+            ball.style.top = ballY + "px";
+            ball.style.left = ballX + "px";
+
+            animationFrameId = requestAnimationFrame(update);
+        }
+
+        // Reset ball to the top
+        function resetBall() {
+            ballY = 0;
+            ballX = Math.random() * (window.innerWidth - 20);
+            ballDirectionX = Math.random() > 0.5 ? 1 : -1;
+        }
+
+        // Start the timer
+        function startTimer() {
+            timerIntervalId = setInterval(function() {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerDisplay.textContent = "Time Left: " + timeLeft + "s";
+                } else {
+                    clearInterval(timerIntervalId);
+                    endGame();  // End the game when time runs out
+                }
+            }, 1000);
+        }
+
+        // Start the game
+        function startGame() {
+            if (gameStarted) return; // Prevent multiple starts
+
+            gameStarted = true;
+            gameOver = false;
+            score = 0;
+            ballSpeed = 8;
+            timeLeft = 30;
+            scoreDisplay.textContent = "Score: " + score;
+            timerDisplay.textContent = "Time Left: " + timeLeft + "s";
+            gameOverMessage.style.display = "none";
+            resetBall();
+
+            // Enable/Disable buttons
+            startButton.disabled = true;
+            restartButton.disabled = false;
+
+            // Start the game loop and timer
+            update();
+            startTimer();
+        }
+
+        // Restart the game
+        function restartGame() {
+            // Reset all variables and UI elements
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(timerIntervalId);
+
+            gameStarted = false;
+            gameOver = false;
+            score = 0;
+            ballSpeed = 8;
+            ballX = Math.random() * (window.innerWidth - 20);
+            ballY = 0;
+            ballDirectionX = Math.random() > 0.5 ? 1 : -1;
+            paddleX = (window.innerWidth / 2) - 50;
+            timeLeft = 30;
+
+            scoreDisplay.textContent = "Score: " + score;
+            timerDisplay.textContent = "Time Left: " + timeLeft + "s";
+            gameOverMessage.style.display = "none";
+
+            paddle.style.left = paddleX + "px";
+            ball.style.top = ballY + "px";
+            ball.style.left = ballX + "px";
+
+            // Enable/Disable buttons
+            startButton.disabled = false;
+            restartButton.disabled = true;
+        }
+
+        // End the game
+        function endGame() {
+            gameOver = true;
+            gameOverMessage.style.display = "block";
+            finalScoreDisplay.textContent = score;
+
+            // Enable/Disable buttons
+            startButton.disabled = true;
+            restartButton.disabled = false;
+        }
+
+        // Attach event listeners to buttons
+        startButton.addEventListener("click", startGame);
+        restartButton.addEventListener("click", restartGame);
+    </script>
+
+</body>
+</html>
